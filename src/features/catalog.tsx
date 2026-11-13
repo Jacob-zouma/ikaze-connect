@@ -1,14 +1,197 @@
-import { useState } from 'react';
-import { Link } from '@tanstack/react-router';
-import { Search, SlidersHorizontal, ArrowUpRight, LayoutGrid, List, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { modules, filterListings } from '@/lib/demo-data';
-import type { ModuleKey } from '@/lib/domain';
-import { ListingCard } from '@/components/ikaze/listing-card';
-import { DemoNotice, EmptyState } from '@/components/ikaze/page-utils';
-import { Delivery } from './delivery';
-export function Catalog({module}:{module:ModuleKey}){const info=modules.find(m=>m.key===module);const [query,setQuery]=useState('');const [category,setCategory]=useState('');const [location,setLocation]=useState('');const [max,setMax]=useState('');const [available,setAvailable]=useState(false);const [view,setView]=useState('grid');const [filters,setFilters]=useState(false);const [sort,setSort]=useState('featured');if(!info)return <EmptyState title="Module introuvable"/>;if(module==='delivery')return <Delivery/>;
- let items=filterListings(module,query,category,location,max?Number(max):Infinity,available);if(sort==='price')items=[...items].sort((a,b)=>a.price-b.price);if(sort==='name')items=[...items].sort((a,b)=>a.title.localeCompare(b.title));
- return <><div className={`catalog-banner banner-${module}`}><div className="container"><div className="breadcrumbs"><Link to="/">Accueil</Link><span>/</span>{info.name}</div><span className="eyebrow">{info.name.toUpperCase()}</span><h1>{info.description}</h1><div className="catalog-banner-bottom"><p>{module==='jobs'?'Emplois, stages et missions. Construisez votre prochain chapitre.':module==='business'?'Découvrez des profils professionnels et leurs catalogues.':module==='student'?'Tutorat, missions et compétences : un espace pour la nouvelle génération.':'Explorez les savoir-faire et les offres près de chez vous.'}</p><Button asChild><Link to="/publier">{module==='jobs'?'Publier une offre':module==='business'?'Créer mon profil professionnel':'Publier une annonce'} <ArrowUpRight/></Link></Button></div></div></div>
- <div className="container section"><DemoNotice/><div className="catalog-search"><Search size={19}/><input aria-label="Rechercher dans le catalogue" placeholder={`Rechercher dans ${info.name}…`} value={query} onChange={e=>setQuery(e.target.value)}/><Button variant="outline" onClick={()=>setFilters(!filters)}><SlidersHorizontal/> Filtres</Button></div><div className="catalog-layout"><aside className={`filter-sidebar ${filters?'filters-open':''}`}><div className="filter-title"><h3>Affiner la recherche</h3><Button variant="ghost" size="icon" aria-label="Fermer les filtres" onClick={()=>setFilters(false)}><X/></Button></div><label>Catégorie<select value={category} onChange={e=>setCategory(e.target.value)}><option value="">Toutes les catégories</option>{info.categories.map(c=><option key={c}>{c}</option>)}</select></label><label>Localisation<select value={location} onChange={e=>setLocation(e.target.value)}><option value="">Tout le Burundi</option>{['Bujumbura','Gitega','Ngozi','À distance'].map(l=><option key={l}>{l}</option>)}</select></label>{module!=='jobs'&&module!=='business'&&<label>Prix maximum (BIF)<input type="number" min="0" value={max} onChange={e=>setMax(e.target.value)} placeholder="Sans limite"/></label>}<label className="checkbox-label"><input type="checkbox" checked={available} onChange={e=>setAvailable(e.target.checked)}/> Disponibles uniquement</label><Button variant="link" onClick={()=>{setCategory('');setLocation('');setMax('');setQuery('');setAvailable(false);}}>Réinitialiser</Button><div className="filter-info">Les prix et disponibilités présentés sont des exemples, pas des offres réelles.</div></aside><div><div className="results-toolbar"><span><strong>{items.length}</strong> {module==='jobs'?'offres fictives':'résultats de démonstration'}</span><div><select aria-label="Trier les résultats" value={sort} onChange={e=>setSort(e.target.value)}><option value="featured">Sélection</option><option value="price">Prix croissant</option><option value="name">Nom A–Z</option></select><Button variant={view==='grid'?'secondary':'ghost'} size="icon" aria-label="Vue grille" onClick={()=>setView('grid')}><LayoutGrid/></Button><Button variant={view==='list'?'secondary':'ghost'} size="icon" aria-label="Vue liste" onClick={()=>setView('list')}><List/></Button></div></div>{items.length?<div className={view==='grid'?'catalog-grid':'catalog-list'}>{items.map(item=><ListingCard key={item.id} item={item}/>)}</div>:<EmptyState title="Aucun résultat pour cette recherche">Essayez une autre catégorie ou retirez certains filtres.</EmptyState>}</div></div></div></>;
+import { useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { Search, SlidersHorizontal, ArrowUpRight, LayoutGrid, List, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { modules, filterListings } from "@/lib/demo-data";
+import type { ModuleKey } from "@/lib/domain";
+import { ListingCard } from "@/components/ikaze/listing-card";
+import { DemoNotice, EmptyState } from "@/components/ikaze/page-utils";
+import { Delivery } from "./delivery";
+export function Catalog({ module }: { module: ModuleKey }) {
+  const info = modules.find((m) => m.key === module);
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("");
+  const [location, setLocation] = useState("");
+  const [max, setMax] = useState("");
+  const [available, setAvailable] = useState(false);
+  const [view, setView] = useState("grid");
+  const [filters, setFilters] = useState(false);
+  const [sort, setSort] = useState("featured");
+  if (!info) return <EmptyState title="Module introuvable" />;
+  if (module === "delivery") return <Delivery />;
+  let items = filterListings(
+    module,
+    query,
+    category,
+    location,
+    max ? Number(max) : Infinity,
+    available,
+  );
+  if (sort === "price") items = [...items].sort((a, b) => a.price - b.price);
+  if (sort === "name") items = [...items].sort((a, b) => a.title.localeCompare(b.title));
+  return (
+    <>
+      <div className={`catalog-banner banner-${module}`}>
+        <div className="container">
+          <div className="breadcrumbs">
+            <Link to="/">Accueil</Link>
+            <span>/</span>
+            {info.name}
+          </div>
+          <span className="eyebrow">{info.name.toUpperCase()}</span>
+          <h1>{info.description}</h1>
+          <div className="catalog-banner-bottom">
+            <p>
+              {module === "jobs"
+                ? "Emplois, stages et missions. Construisez votre prochain chapitre."
+                : module === "business"
+                  ? "Découvrez des profils professionnels et leurs catalogues."
+                  : module === "student"
+                    ? "Tutorat, missions et compétences : un espace pour la nouvelle génération."
+                    : "Explorez les savoir-faire et les offres près de chez vous."}
+            </p>
+            <Button asChild>
+              <Link to="/publier">
+                {module === "jobs"
+                  ? "Publier une offre"
+                  : module === "business"
+                    ? "Créer mon profil professionnel"
+                    : "Publier une annonce"}{" "}
+                <ArrowUpRight />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+      <div className="container section">
+        <DemoNotice />
+        <div className="catalog-search">
+          <Search size={19} />
+          <input
+            aria-label="Rechercher dans le catalogue"
+            placeholder={`Rechercher dans ${info.name}…`}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <Button variant="outline" onClick={() => setFilters(!filters)}>
+            <SlidersHorizontal /> Filtres
+          </Button>
+        </div>
+        <div className="catalog-layout">
+          <aside className={`filter-sidebar ${filters ? "filters-open" : ""}`}>
+            <div className="filter-title">
+              <h3>Affiner la recherche</h3>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Fermer les filtres"
+                onClick={() => setFilters(false)}
+              >
+                <X />
+              </Button>
+            </div>
+            <label>
+              Catégorie
+              <select value={category} onChange={(e) => setCategory(e.target.value)}>
+                <option value="">Toutes les catégories</option>
+                {info.categories.map((c) => (
+                  <option key={c}>{c}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Localisation
+              <select value={location} onChange={(e) => setLocation(e.target.value)}>
+                <option value="">Tout le Burundi</option>
+                {["Bujumbura", "Gitega", "Ngozi", "À distance"].map((l) => (
+                  <option key={l}>{l}</option>
+                ))}
+              </select>
+            </label>
+            {module !== "jobs" && module !== "business" && (
+              <label>
+                Prix maximum (BIF)
+                <input
+                  type="number"
+                  min="0"
+                  value={max}
+                  onChange={(e) => setMax(e.target.value)}
+                  placeholder="Sans limite"
+                />
+              </label>
+            )}
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={available}
+                onChange={(e) => setAvailable(e.target.checked)}
+              />{" "}
+              Disponibles uniquement
+            </label>
+            <Button
+              variant="link"
+              onClick={() => {
+                setCategory("");
+                setLocation("");
+                setMax("");
+                setQuery("");
+                setAvailable(false);
+              }}
+            >
+              Réinitialiser
+            </Button>
+            <div className="filter-info">
+              Les prix et disponibilités présentés sont des exemples, pas des offres réelles.
+            </div>
+          </aside>
+          <div>
+            <div className="results-toolbar">
+              <span>
+                <strong>{items.length}</strong>{" "}
+                {module === "jobs" ? "offres fictives" : "résultats de démonstration"}
+              </span>
+              <div>
+                <select
+                  aria-label="Trier les résultats"
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value)}
+                >
+                  <option value="featured">Sélection</option>
+                  <option value="price">Prix croissant</option>
+                  <option value="name">Nom A–Z</option>
+                </select>
+                <Button
+                  variant={view === "grid" ? "secondary" : "ghost"}
+                  size="icon"
+                  aria-label="Vue grille"
+                  onClick={() => setView("grid")}
+                >
+                  <LayoutGrid />
+                </Button>
+                <Button
+                  variant={view === "list" ? "secondary" : "ghost"}
+                  size="icon"
+                  aria-label="Vue liste"
+                  onClick={() => setView("list")}
+                >
+                  <List />
+                </Button>
+              </div>
+            </div>
+            {items.length ? (
+              <div className={view === "grid" ? "catalog-grid" : "catalog-list"}>
+                {items.map((item) => (
+                  <ListingCard key={item.id} item={item} />
+                ))}
+              </div>
+            ) : (
+              <EmptyState title="Aucun résultat pour cette recherche">
+                Essayez une autre catégorie ou retirez certains filtres.
+              </EmptyState>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
