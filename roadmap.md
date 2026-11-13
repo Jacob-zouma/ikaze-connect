@@ -1,4 +1,8 @@
 # IKAZE CONNECT
+- [ ] Implémenter client HTTP, configuration validée, contrats normalisés et services Laravel Sanctum.
+- [ ] Séparer les sources mock/API et relier les catalogues, recherche, détails, comptes et actions privées.
+- [ ] Documenter les endpoints proposés, l’hébergement Sanctum et les limites non vérifiées.
+- [ ] Tester transport, modes, auth, ressources, formulaires et parcours démonstration.
 - [x] Identité, navigation, accueil et adaptation mobile.
 - [x] Huit modules publics, catalogues, détails, recherche et formulaires de démonstration.
 - [x] Panier, parcours de compte, espaces par rôle et administration en démonstration.
