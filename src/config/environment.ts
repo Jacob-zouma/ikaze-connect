@@ -1,5 +1,5 @@
 export type ApiMode = 'mock' | 'api';
-export interface Environment { mode: ApiMode; appEnv: 'development' | 'test' | 'production'; baseUrl: string; origin: string; timeout: number; error?: string }
+export interface Environment { mode: ApiMode; appEnv: 'development' | 'test' | 'production'; baseUrl: string; origin: string; timeout: number; error?: string | undefined }
 export function parseEnvironment(input: Record<string, unknown>): Environment {
   const mode = input['VITE_API_MODE'] ?? 'mock';
   const appEnv = input['VITE_APP_ENV'] ?? 'development';

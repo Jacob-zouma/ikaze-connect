@@ -3,7 +3,7 @@ import type { Listing, PaginatedResponse } from '@/lib/domain';
 import { ApiError } from './errors';
 export const bifSchema = z.string().regex(/^(0|[1-9]\d*)$/).refine(v => BigInt(v) <= BigInt(Number.MAX_SAFE_INTEGER), 'Montant hors limite exacte du navigateur');
 export const listingSchema = z.object({ id: z.union([z.string().min(1), z.number().int().nonnegative().safe()]).transform(String), module: z.enum(['services','market','jobs','digital','delivery','classifieds','business','student']), title: z.string(), category: z.string(), location: z.string(), price_bif: bifSchema, unit: z.string().optional(), image_url: z.string().url().nullable().optional(), seller: z.object({ id: z.union([z.string(), z.number().int().safe()]).transform(String), name: z.string() }), description: z.string(), available: z.boolean(), featured: z.boolean().optional(), tags: z.array(z.string()), stock: z.number().int().nonnegative().optional(), deadline: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional() });
-export function parseContract<T>(schema: z.ZodType<T>, value: unknown): T {
+export function parseContract<S extends z.ZodTypeAny>(schema: S, value: unknown): z.output<S> {
   const result = schema.safeParse(value);
   if (!result.success) throw new ApiError(502, { message: 'La réponse Laravel ne respecte pas le contrat attendu. Aucune donnée fictive n’a été substituée.' }, 'contract');
   return result.data;

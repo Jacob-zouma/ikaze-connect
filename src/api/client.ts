@@ -1,7 +1,7 @@
 import { environment, type Environment } from '@/config/environment';
 import { ApiError, httpError } from './errors';
 export { ApiError } from './errors';
-export interface RequestOptions extends Omit<RequestInit, 'body'> { body?: BodyInit | null; timeout?: number; scope?: 'api' | 'origin'; responseType?: 'json' | 'blob'; dedupeKey?: string }
+export interface RequestOptions extends Omit<RequestInit, 'body' | 'signal'> { body?: BodyInit | null; signal?: AbortSignal | null | undefined; timeout?: number; scope?: 'api' | 'origin'; responseType?: 'json' | 'blob'; dedupeKey?: string }
 export function createHttpClient(config: Environment, transport: typeof fetch = (...args) => fetch(...args)) {
   const pending = new Set<string>();
   const listeners = new Set<() => void>();
