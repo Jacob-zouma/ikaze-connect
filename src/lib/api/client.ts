@@ -1,6 +1,6 @@
 import type { ApiErrorBody, PaginatedResponse, Listing, ModuleKey, Profile } from '../domain';
 export class ApiError extends Error { constructor(public status:number, public body:ApiErrorBody) { super(body.message); this.name='ApiError'; } }
-const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '');
+const baseUrl = import.meta.env['VITE_API_BASE_URL']?.replace(/\/$/, '');
 export const apiConfigured = Boolean(baseUrl);
 let bearerToken: string | undefined;
 // Token remains in memory. Decide cookie/Sanctum or token transport with the target API before activation.
