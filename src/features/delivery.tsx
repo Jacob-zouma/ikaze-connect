@@ -1,0 +1,126 @@
+import { useState } from "react";
+import { Truck, MapPin, Package, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DemoNotice, Success } from "@/components/ikaze/page-utils";
+import { useDemo } from "@/components/ikaze/demo-context";
+export function Delivery() {
+  const [done, setDone] = useState(false);
+  const { addActivity } = useDemo();
+  return (
+    <div className="container section">
+      <span className="eyebrow">IKAZE DELIVERY</span>
+      <h1>
+        D’un point à l’autre,
+        <br />
+        en toute simplicité.
+      </h1>
+      <p className="section-subtitle">Préparez votre demande de livraison au Burundi.</p>
+      <DemoNotice />
+      <div className="delivery-layout">
+        <section>
+          {done ? (
+            <Success title="Demande de livraison préparée" />
+          ) : (
+            <form
+              className="standard-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                addActivity("Livraison", "Demande de livraison");
+                setDone(true);
+              }}
+            >
+              <h2>
+                <Truck /> Votre livraison
+              </h2>
+              <div className="form-grid">
+                <label>
+                  Adresse de départ
+                  <input required placeholder="Quartier, rue, point de repère" />
+                </label>
+                <label>
+                  Adresse de destination
+                  <input required placeholder="Quartier, rue, point de repère" />
+                </label>
+                <label>
+                  Nom du destinataire
+                  <input required autoComplete="name" />
+                </label>
+                <label>
+                  Téléphone du destinataire
+                  <input type="tel" required placeholder="+257…" />
+                </label>
+                <label>
+                  Type de colis
+                  <select>
+                    <option>Colis</option>
+                    <option>Courses</option>
+                    <option>Documents</option>
+                  </select>
+                </label>
+                <label>
+                  Poids approximatif (kg)
+                  <input type="number" min="0.1" max="100" step="0.1" required />
+                </label>
+                <label>
+                  Date souhaitée
+                  <input type="date" required />
+                </label>
+                <label>
+                  Mode de livraison
+                  <select>
+                    <option>Standard</option>
+                    <option>Prioritaire · tarif à confirmer</option>
+                  </select>
+                </label>
+              </div>
+              <label>
+                Description du colis
+                <textarea required rows={3} placeholder="Contenu, dimensions, précautions…" />
+              </label>
+              <label className="checkbox-label">
+                <input type="checkbox" required /> Je confirme que le colis ne contient aucun
+                produit interdit.
+              </label>
+              <div className="notice">
+                Frais non disponibles : le tarif sera fourni par l’API. Aucun livreur ni GPS réel
+                n’est connecté.
+              </div>
+              <Button type="submit" size="lg">
+                Préparer la demande démo
+              </Button>
+            </form>
+          )}
+        </section>
+        <aside className="delivery-aside">
+          <h2>Le parcours de votre colis</h2>
+          {[
+            {
+              icon: MapPin,
+              title: "Départ & destination",
+              text: "Des adresses précises et des points de repère.",
+            },
+            {
+              icon: Package,
+              title: "Prise en charge",
+              text: "Affectation d’un livreur après connexion du service.",
+            },
+            {
+              icon: CheckCircle2,
+              title: "Confirmation de réception",
+              text: "Validation par le destinataire, sans simulation GPS.",
+            },
+          ].map(({ icon: Icon, title, text }, i) => (
+            <div key={title}>
+              <span>{i + 1}</span>
+              <div>
+                <Icon />
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </div>
+            </div>
+          ))}
+        </aside>
+      </div>
+    </div>
+  );
+}

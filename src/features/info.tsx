@@ -1,0 +1,183 @@
+import { useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { ChevronDown, ShieldCheck, Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DemoNotice } from "@/components/ikaze/page-utils";
+import { ListingCard } from "@/components/ikaze/listing-card";
+import { listings } from "@/lib/demo-data";
+export function SearchPage({ query, location }: { query: string; location: string }) {
+  const [q, setQ] = useState(query);
+  const results = listings.filter(
+    (l) =>
+      `${l.title} ${l.category} ${l.module}`
+        .toLocaleLowerCase("fr")
+        .includes(q.toLocaleLowerCase("fr")) &&
+      (!location || l.location === location),
+  );
+  return (
+    <div className="container section">
+      <span className="eyebrow">TOUTES LES POSSIBILITÉS IKAZE</span>
+      <h1>Votre recherche</h1>
+      <DemoNotice />
+      <div className="catalog-search">
+        <Search />
+        <input
+          aria-label="Rechercher partout"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Service, produit, opportunité…"
+        />
+      </div>
+      <p>
+        {results.length} résultats de démonstration {location && `à ${location}`}
+      </p>
+      <div className="listing-grid">
+        {results.map((item) => (
+          <ListingCard key={item.id} item={item} />
+        ))}
+      </div>
+      {!results.length && <p>Aucun résultat. Essayez un autre terme.</p>}
+    </div>
+  );
+}
+const faqs = [
+  [
+    "Comment trouver un professionnel ?",
+    "Explorez IKAZE Services, choisissez une catégorie et une localisation, puis ouvrez une fiche pour préparer un devis. Dans cette version, tout reste en démonstration.",
+  ],
+  [
+    "Puis-je acheter un produit maintenant ?",
+    "Vous pouvez tester le panier et préparer une commande. Aucune vente, aucun paiement et aucune réservation réelle de stock ne sont possibles sans l’API Laravel.",
+  ],
+  [
+    "Comment publier une offre ?",
+    "Utilisez le formulaire de publication. La création de compte, la vérification et la modération réelles seront connectées à Laravel.",
+  ],
+  [
+    "Les offres d’emploi sont-elles réelles ?",
+    "Non. Les annonces actuellement affichées sont explicitement fictives. Elles permettent de tester les candidatures ; elles ne correspondent à aucun recrutement.",
+  ],
+  [
+    "Quels moyens de paiement seront proposés ?",
+    "Lumicash, EcoCash et d’autres solutions sont envisagés. Leur activation dépendra de la documentation officielle, des contrats marchands et d’identifiants valides.",
+  ],
+  [
+    "Comment signaler une annonce ?",
+    "Ouvrez la fiche puis choisissez « Signaler cette annonce ». Le signalement reste un brouillon de démonstration jusqu’à connexion de l’API.",
+  ],
+];
+export function InfoPage({
+  kind,
+}: {
+  kind: "aide" | "contact" | "conditions" | "confidentialite";
+}) {
+  const [done, setDone] = useState(false);
+  return (
+    <div className="container section narrow">
+      <span className="eyebrow">IKAZE CONNECT</span>
+      <h1>
+        {kind === "aide"
+          ? "Comment pouvons-nous vous aider ?"
+          : kind === "contact"
+            ? "Parlons de votre projet."
+            : kind === "conditions"
+              ? "Conditions d’utilisation"
+              : "Vos données, votre confiance."}
+      </h1>
+      {kind === "aide" ? (
+        <div className="faq-list">
+          {faqs.map(([q, a]) => (
+            <details key={q}>
+              <summary>
+                {q}
+                <ChevronDown size={18} />
+              </summary>
+              <p>{a}</p>
+            </details>
+          ))}
+          <Button asChild>
+            <Link to="/contact">Contacter l’équipe</Link>
+          </Button>
+        </div>
+      ) : kind === "contact" ? (
+        <>
+          <DemoNotice />
+          {done ? (
+            <p role="status" className="notice">
+              Message validé, mais non envoyé : aucun service de contact n’est connecté.
+            </p>
+          ) : (
+            <form
+              className="standard-form framed-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                setDone(true);
+              }}
+            >
+              <div className="form-grid">
+                <label>
+                  Votre nom
+                  <input required />
+                </label>
+                <label>
+                  Votre e-mail
+                  <input type="email" required />
+                </label>
+              </div>
+              <label>
+                Sujet
+                <select>
+                  <option>Question générale</option>
+                  <option>Partenariat</option>
+                  <option>Assistance</option>
+                  <option>Signalement</option>
+                </select>
+              </label>
+              <label>
+                Message
+                <textarea required minLength={10} rows={5} />
+              </label>
+              <Button type="submit">Valider mon message démo</Button>
+            </form>
+          )}
+        </>
+      ) : (
+        <div className="legal-content">
+          <div className="notice">
+            <ShieldCheck /> Texte préparatoire à valider juridiquement avant exploitation
+            commerciale.
+          </div>
+          <h2>1. Version de démonstration</h2>
+          <p>
+            IKAZE CONNECT présente actuellement des données fictives pour explorer les parcours de
+            services, commerce, emploi et livraison. Aucun contrat, paiement, recrutement ni compte
+            authentifié n’est créé.
+          </p>
+          <h2>2. {kind === "conditions" ? "Utilisation responsable" : "Informations saisies"}</h2>
+          <p>
+            {kind === "conditions"
+              ? "Les annonces doivent être légales, exactes et respectueuses. La fraude, les contenus illicites et les atteintes aux personnes sont interdits. Les modalités commerciales définitives seront publiées avant le lancement."
+              : "Les informations de profil, messages et demandes saisis dans la démonstration restent en mémoire pendant la session. Les fichiers sélectionnés ne sont pas téléversés. Évitez toute donnée sensible dans les formulaires de démonstration."}
+          </p>
+          <h2>
+            3. {kind === "conditions" ? "Paiements et responsabilité" : "Future connexion Laravel"}
+          </h2>
+          <p>
+            {kind === "conditions"
+              ? "Les paiements, commissions, délais, retours, remboursements et responsabilités doivent être définis dans une politique validée. Aucun prestataire de paiement n’est connecté."
+              : "La collecte réelle, les finalités, durées de conservation, destinataires, droits d’accès et suppression seront documentés lors de la connexion de l’API. Les autorisations et protections seront contrôlées côté Laravel."}
+          </p>
+          <h2>4. Contact et signalements</h2>
+          <p>
+            Le formulaire de contact et les signalements sont des démonstrations sans envoi. Les
+            coordonnées légales du responsable de traitement et de l’entreprise doivent encore être
+            fournies.
+          </p>
+          <Button variant="outline" asChild>
+            <Link to="/contact">Préparer une demande</Link>
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -1,0 +1,285 @@
+import { useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, Mail, LockKeyhole, ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DemoNotice, Success } from "@/components/ikaze/page-utils";
+import { modules, roles } from "@/lib/demo-data";
+import { useDemo } from "@/components/ikaze/demo-context";
+export function AccountForm({ mode }: { mode: "login" | "signup" | "forgot" | "reset" }) {
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState("");
+  const title = {
+    login: "Heureux de vous retrouver.",
+    signup: "Votre prochain chapitre commence ici.",
+    forgot: "Un nouveau départ pour votre mot de passe.",
+    reset: "Choisissez votre nouveau mot de passe.",
+  }[mode];
+  return (
+    <div className="account-layout container section">
+      <div className="account-intro">
+        <span className="eyebrow">BIENVENUE SUR IKAZE CONNECT</span>
+        <h1>{title}</h1>
+        <p>
+          Un compte, toutes les possibilités.
+          <br />
+          Services, achats et opportunités au même endroit.
+        </p>
+        <div>
+          <ShieldCheck size={24} />
+          <span>
+            L’authentification réelle sera assurée par votre API Laravel. Aucun compte ne peut être
+            créé ici pour le moment.
+          </span>
+        </div>
+        <Button variant="outline" asChild>
+          <Link to="/espace/$role" params={{ role: "client" }}>
+            Explorer les espaces démo <ArrowRight />
+          </Link>
+        </Button>
+      </div>
+      <section className="account-form">
+        <h2>
+          {mode === "login"
+            ? "Connexion"
+            : mode === "signup"
+              ? "Créer mon compte"
+              : mode === "forgot"
+                ? "Mot de passe oublié"
+                : "Réinitialiser le mot de passe"}
+        </h2>
+        <DemoNotice />
+        {done ? (
+          <div className="notice" role="status">
+            Formulaire validé. API Laravel non connectée : aucun{" "}
+            {mode === "signup"
+              ? "compte créé ni e-mail envoyé"
+              : mode === "login"
+                ? "accès authentifié ouvert"
+                : "mot de passe modifié ni e-mail envoyé"}
+            .{" "}
+            <Link to="/espace/$role" params={{ role: "client" }}>
+              Ouvrir l’espace de démonstration
+            </Link>
+          </div>
+        ) : (
+          <form
+            className="standard-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const data = new FormData(e.currentTarget);
+              if (mode === "signup" || mode === "reset") {
+                if (data.get("password") !== data.get("confirm")) {
+                  setError("Les mots de passe ne correspondent pas.");
+                  return;
+                }
+              }
+              setError("");
+              setDone(true);
+            }}
+          >
+            {mode === "signup" && (
+              <>
+                <label>
+                  Nom complet
+                  <input autoComplete="name" required name="name" />
+                </label>
+                <label>
+                  Je souhaite utiliser IKAZE comme
+                  <select>
+                    {roles
+                      .filter((r) => r.key !== "administrateur")
+                      .map((r) => (
+                        <option key={r.key}>{r.label}</option>
+                      ))}
+                  </select>
+                </label>
+              </>
+            )}
+            {mode !== "reset" && (
+              <label>
+                <span>
+                  <Mail size={15} /> Adresse e-mail
+                </span>
+                <input
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  required
+                  placeholder="vous@exemple.com"
+                />
+              </label>
+            )}
+            {mode !== "forgot" && (
+              <label>
+                <span>
+                  <LockKeyhole size={15} /> Mot de passe
+                </span>
+                <input
+                  type="password"
+                  name="password"
+                  minLength={8}
+                  autoComplete={mode === "login" ? "current-password" : "new-password"}
+                  required
+                />
+              </label>
+            )}
+            {(mode === "signup" || mode === "reset") && (
+              <label>
+                Confirmer le mot de passe
+                <input
+                  type="password"
+                  name="confirm"
+                  minLength={8}
+                  autoComplete="new-password"
+                  required
+                />
+              </label>
+            )}
+            {mode === "login" && (
+              <Link className="text-primary" to="/mot-de-passe-oublie">
+                Mot de passe oublié ?
+              </Link>
+            )}
+            {mode === "signup" && (
+              <label className="checkbox-label">
+                <input type="checkbox" required /> J’accepte les{" "}
+                <Link to="/conditions">conditions d’utilisation</Link> et la{" "}
+                <Link to="/confidentialite">politique de confidentialité</Link>.
+              </label>
+            )}
+            {error && (
+              <p role="alert" className="form-error">
+                {error}
+              </p>
+            )}
+            <Button type="submit" size="lg">
+              Valider le formulaire démo <ArrowRight />
+            </Button>
+          </form>
+        )}
+        <p className="account-switch">
+          {mode === "login" ? (
+            <>
+              Pas encore de compte ? <Link to="/inscription">S’inscrire</Link>
+            </>
+          ) : (
+            <>
+              Déjà un compte ? <Link to="/connexion">Se connecter</Link>
+            </>
+          )}
+        </p>
+      </section>
+    </div>
+  );
+}
+export function Publish() {
+  const [done, setDone] = useState(false);
+  const [module, setModule] = useState("services");
+  const { addActivity } = useDemo();
+  const info = modules.find((m) => m.key === module);
+  return (
+    <div className="container section narrow">
+      <span className="eyebrow">FAITES DÉCOUVRIR VOTRE ACTIVITÉ</span>
+      <h1>Votre offre, votre savoir-faire.</h1>
+      <p className="section-subtitle">Préparez une annonce claire et complète.</p>
+      <DemoNotice />
+      {done ? (
+        <Success title="Votre annonce démo est prête" />
+      ) : (
+        <form
+          className="standard-form framed-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const data = new FormData(e.currentTarget);
+            addActivity("Publication", String(data.get("title")));
+            setDone(true);
+          }}
+        >
+          <div className="form-grid">
+            <label>
+              Module
+              <select value={module} onChange={(e) => setModule(e.target.value)}>
+                {modules
+                  .filter((m) => m.key !== "delivery")
+                  .map((m) => (
+                    <option key={m.key} value={m.key}>
+                      {m.name}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Catégorie
+              <select key={module}>
+                {info?.categories.map((c) => (
+                  <option key={c}>{c}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Titre de l’annonce
+              <input name="title" required minLength={5} maxLength={100} />
+            </label>
+            <label>
+              Localisation
+              <select>
+                <option>Bujumbura</option>
+                <option>Gitega</option>
+                <option>Ngozi</option>
+                <option>À distance</option>
+              </select>
+            </label>
+            <label>
+              {module === "jobs" ? "Rémunération indicative (BIF)" : "Prix indicatif (BIF)"}
+              <input type="number" min="0" required />
+            </label>
+            <label>
+              {module === "jobs" ? "Type de contrat" : "Disponibilité"}
+              <select>
+                {(module === "jobs"
+                  ? ["Emploi", "Stage", "Freelance", "Mission"]
+                  : ["Disponible", "Sur rendez-vous", "À confirmer"]
+                ).map((v) => (
+                  <option key={v}>{v}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <label>
+            Description
+            <textarea
+              required
+              minLength={30}
+              rows={5}
+              placeholder="Présentez votre offre, vos conditions, délais et compétences…"
+            />
+          </label>
+          <label>
+            Photos ou documents
+            <input type="file" accept="image/jpeg,image/png,image/webp,application/pdf" multiple />
+            <small>Prévisualisation locale uniquement. Aucun fichier n’est transmis.</small>
+          </label>
+          {module === "market" && (
+            <label>
+              Stock
+              <input required type="number" min="1" />
+            </label>
+          )}
+          {module === "jobs" && (
+            <label>
+              Date limite de candidature
+              <input type="date" required />
+            </label>
+          )}
+          <label className="checkbox-label">
+            <input type="checkbox" required /> Je confirme respecter les règles de publication et
+            comprends que ce brouillon est une démonstration.
+          </label>
+          <Button type="submit" size="lg">
+            Préparer mon annonce démo <ArrowRight />
+          </Button>
+        </form>
+      )}
+    </div>
+  );
+}

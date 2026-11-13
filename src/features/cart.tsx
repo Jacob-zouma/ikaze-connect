@@ -1,0 +1,180 @@
+import { useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useDemo } from "@/components/ikaze/demo-context";
+import { DemoNotice, EmptyState, Success } from "@/components/ikaze/page-utils";
+import { money } from "@/lib/domain";
+export function Cart() {
+  const { cart, setQuantity, addActivity, clearCart } = useDemo();
+  const [step, setStep] = useState("cart");
+  const total = cart.reduce((n, l) => n + l.quantity * l.listing.price, 0);
+  return (
+    <div className="container section">
+      <span className="eyebrow">IKAZE MARKET</span>
+      <h1>Mon panier</h1>
+      <DemoNotice />
+      <div className="checkout-steps">
+        <span className="active">1. Panier</span>
+        <span className={step === "address" ? "active" : ""}>2. Livraison</span>
+        <span>3. Brouillon de commande</span>
+      </div>
+      {step === "done" ? (
+        <Success title="Brouillon de commande préparé">
+          Aucun paiement, aucune réservation de stock et aucune commande réelle. Votre brouillon est
+          visible dans l’espace de démonstration.
+        </Success>
+      ) : cart.length === 0 ? (
+        <>
+          <EmptyState title="Votre panier attend vos découvertes">
+            Explorez le Market et ajoutez un produit de démonstration.
+          </EmptyState>
+          <Button asChild>
+            <Link to="/$module" params={{ module: "market" }}>
+              Explorer le Market <ArrowRight />
+            </Link>
+          </Button>
+        </>
+      ) : (
+        <div className="cart-layout">
+          <div>
+            {step === "address" ? (
+              <form
+                id="checkout"
+                className="standard-form"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  addActivity("Commande", `${cart.length} produit(s) du Market`, total);
+                  clearCart();
+                  setStep("done");
+                }}
+              >
+                <h2>Vos coordonnées de livraison</h2>
+                <div className="form-grid">
+                  <label>
+                    Nom complet
+                    <input required autoComplete="name" />
+                  </label>
+                  <label>
+                    Téléphone
+                    <input required type="tel" autoComplete="tel" />
+                  </label>
+                  <label>
+                    Adresse
+                    <input required autoComplete="street-address" />
+                  </label>
+                  <label>
+                    Ville
+                    <select>
+                      <option>Bujumbura</option>
+                      <option>Gitega</option>
+                      <option>Ngozi</option>
+                    </select>
+                  </label>
+                </div>
+                <label>
+                  Instructions
+                  <textarea rows={3} />
+                </label>
+                <h3>Mode de paiement</h3>
+                <div className="payment-options">
+                  {["Lumicash", "EcoCash", "Carte bancaire"].map((p) => (
+                    <label key={p}>
+                      <input type="radio" disabled /> {p}
+                      <small>Non connecté</small>
+                    </label>
+                  ))}
+                </div>
+                <div className="notice">
+                  Aucun paiement n’est disponible. Les frais de livraison ne sont pas encore
+                  calculables.
+                </div>
+                <label className="checkbox-label">
+                  <input type="checkbox" required /> Je comprends qu’aucune commande réelle n’est
+                  passée.
+                </label>
+                <Button variant="outline" onClick={() => setStep("cart")}>
+                  Retour au panier
+                </Button>
+              </form>
+            ) : (
+              cart.map((line) => (
+                <article key={line.listing.id} className="cart-line">
+                  {line.listing.image && (
+                    <img
+                      src={line.listing.image}
+                      alt={line.listing.title}
+                      width={110}
+                      height={90}
+                    />
+                  )}
+                  <div>
+                    <Link to="/annonce/$id" params={{ id: line.listing.id }}>
+                      <h3>{line.listing.title}</h3>
+                    </Link>
+                    <p>{line.listing.seller}</p>
+                    <strong>{money(line.listing.price)}</strong>
+                    <div className="quantity-control">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        aria-label={`Diminuer ${line.listing.title}`}
+                        onClick={() => setQuantity(line.listing.id, line.quantity - 1)}
+                      >
+                        <Minus />
+                      </Button>
+                      <span aria-label="Quantité">{line.quantity}</span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        aria-label={`Augmenter ${line.listing.title}`}
+                        onClick={() => setQuantity(line.listing.id, line.quantity + 1)}
+                        disabled={line.quantity >= (line.listing.stock ?? 99)}
+                      >
+                        <Plus />
+                      </Button>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={`Supprimer ${line.listing.title}`}
+                    onClick={() => setQuantity(line.listing.id, 0)}
+                  >
+                    <Trash2 />
+                  </Button>
+                </article>
+              ))
+            )}
+          </div>
+          <aside className="cart-summary">
+            <ShoppingBag />
+            <h2>Récapitulatif</h2>
+            <div>
+              <span>Sous-total</span>
+              <strong>{money(total)}</strong>
+            </div>
+            <div>
+              <span>Livraison</span>
+              <span>À confirmer</span>
+            </div>
+            <div className="cart-total">
+              <span>Total hors livraison</span>
+              <strong>{money(total)}</strong>
+            </div>
+            {step === "cart" ? (
+              <Button size="lg" onClick={() => setStep("address")}>
+                Préparer la livraison <ArrowRight />
+              </Button>
+            ) : (
+              <Button type="submit" form="checkout" size="lg">
+                Créer le brouillon démo
+              </Button>
+            )}
+            <p className="small-note">Aucun prélèvement. Prix et stock de démonstration.</p>
+          </aside>
+        </div>
+      )}
+    </div>
+  );
+}

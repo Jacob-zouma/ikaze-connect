@@ -1,0 +1,275 @@
+import { useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { MapPin, Heart, ShieldCheck, MessageCircle, Flag, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { getListing, listings } from "@/lib/demo-data";
+import { money } from "@/lib/domain";
+import { useDemo } from "@/components/ikaze/demo-context";
+import { ActionDialog, DemoNotice, EmptyState, Success } from "@/components/ikaze/page-utils";
+import { ListingCard } from "@/components/ikaze/listing-card";
+export function Detail({ id }: { id: string }) {
+  const item = getListing(id);
+  const { addToCart, favorites, toggleFavorite, addActivity } = useDemo();
+  const [tab, setTab] = useState("description");
+  const [action, setAction] = useState("");
+  const [done, setDone] = useState(false);
+  const [added, setAdded] = useState(false);
+  if (!item)
+    return (
+      <div className="container section">
+        <EmptyState title="Annonce introuvable" />
+        <Button asChild>
+          <Link to="/">Retour à l’accueil</Link>
+        </Button>
+      </div>
+    );
+  const job = item.module === "jobs";
+  return (
+    <div className="container section">
+      <Link className="back-link" to="/$module" params={{ module: item.module }}>
+        <ArrowLeft size={16} /> Retour au catalogue
+      </Link>
+      <DemoNotice />
+      <div className="detail-layout">
+        <div>
+          {item.image ? (
+            <img
+              className="detail-photo"
+              src={item.image}
+              alt={item.title}
+              width={1024}
+              height={768}
+            />
+          ) : (
+            <div className="detail-illustration">
+              <ShieldCheck size={64} />
+              <span>{item.category}</span>
+            </div>
+          )}
+          <div className="detail-tabs">
+            {["description", "conditions", "avis", "portfolio"].map((t) => (
+              <Button key={t} variant={tab === t ? "secondary" : "ghost"} onClick={() => setTab(t)}>
+                {t === "description"
+                  ? "Description"
+                  : t === "conditions"
+                    ? "Conditions"
+                    : t === "avis"
+                      ? "Avis"
+                      : "Portfolio"}
+              </Button>
+            ))}
+          </div>
+          {tab === "description" ? (
+            <section className="detail-text">
+              <h2>À propos de cette {job ? "opportunité" : "offre"}</h2>
+              <p>{item.description}</p>
+              <div className="tags">
+                {item.tags.map((t) => (
+                  <span key={t}>{t}</span>
+                ))}
+              </div>
+            </section>
+          ) : tab === "conditions" ? (
+            <section className="detail-text">
+              <h2>Conditions de démonstration</h2>
+              <p>
+                Les délais, disponibilités, frais et conditions définitifs seront précisés par
+                l’annonceur. Aucun règlement n’est possible dans cette version. Les retours et
+                réclamations devront être validés selon la politique commerciale finale.
+              </p>
+            </section>
+          ) : tab === "avis" ? (
+            <EmptyState title="Aucun avis authentique">
+              Nous n’affichons pas d’avis fictifs ni d’évaluations inventées.
+            </EmptyState>
+          ) : (
+            <EmptyState title="Portfolio en attente">
+              Les réalisations authentiques seront ajoutées par le professionnel.
+            </EmptyState>
+          )}
+        </div>
+        <aside className="detail-summary">
+          <span className="eyebrow">{item.category}</span>
+          <h1>{item.title}</h1>
+          <p className="location">
+            <MapPin size={16} />
+            {item.location}
+          </p>
+          <div className="seller-profile">
+            <span>{item.seller.slice(0, 2).toUpperCase()}</span>
+            <div>
+              <strong>{item.seller}</strong>
+              <small>Profil de démonstration · non vérifié</small>
+            </div>
+          </div>
+          <div className="detail-price">
+            {item.price ? (
+              <>
+                <small>
+                  {item.unit === "à partir de" ? "À partir de" : "Prix de démonstration"}
+                </small>
+                <strong>
+                  {money(item.price)} <small>{item.unit?.startsWith("/") ? item.unit : ""}</small>
+                </strong>
+              </>
+            ) : (
+              <strong>
+                {job ? "Offre fictive, aucun recrutement réel" : "Profil professionnel fictif"}
+              </strong>
+            )}
+          </div>
+          {item.module === "market" ? (
+            <>
+              <p>Stock de démonstration : {item.stock} articles</p>
+              <Button
+                size="lg"
+                onClick={() => {
+                  addToCart(item);
+                  setAdded(true);
+                }}
+              >
+                {added ? "Ajouter un autre article" : "Ajouter au panier démo"}
+              </Button>
+              {added && (
+                <Link className="text-primary" to="/panier">
+                  Article ajouté · Voir mon panier
+                </Link>
+              )}
+            </>
+          ) : (
+            <Button
+              size="lg"
+              onClick={() => {
+                setAction(
+                  job
+                    ? "Candidature"
+                    : item.module === "classifieds"
+                      ? "Contacter l’annonceur"
+                      : "Demande de devis",
+                );
+                setDone(false);
+              }}
+            >
+              {job
+                ? "Préparer ma candidature"
+                : item.module === "classifieds"
+                  ? "Contacter l’annonceur"
+                  : "Demander un devis"}
+            </Button>
+          )}
+          {["services", "digital", "student"].includes(item.module) && (
+            <Button
+              variant="outline"
+              onClick={() => {
+                setAction("Réservation");
+                setDone(false);
+              }}
+            >
+              Réserver une prestation démo
+            </Button>
+          )}
+          <div className="detail-controls">
+            <Button variant="outline" onClick={() => toggleFavorite(id)}>
+              <Heart fill={favorites.includes(id) ? "currentColor" : "none"} />
+              {favorites.includes(id) ? "En favoris" : "Favoris"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setAction("Message");
+                setDone(false);
+              }}
+            >
+              <MessageCircle /> Message
+            </Button>
+          </div>
+          <p className="small-note">
+            <ShieldCheck size={15} /> Aucun paiement réel. Les actions restent dans cette session de
+            démonstration.
+          </p>
+          <Button
+            variant="link"
+            onClick={() => {
+              setAction("Signalement");
+              setDone(false);
+            }}
+          >
+            <Flag /> Signaler cette annonce
+          </Button>
+        </aside>
+      </div>
+      <h2 className="related-heading">À découvrir aussi</h2>
+      <div className="jobs-grid">
+        {listings
+          .filter((i) => i.module === item.module && i.id !== item.id)
+          .slice(0, 3)
+          .map((i) => (
+            <ListingCard key={i.id} item={i} />
+          ))}
+      </div>
+      {action && (
+        <ActionDialog title={`${action} · Démonstration`} onClose={() => setAction("")}>
+          {done ? (
+            <Success title={`${action} préparé(e)`} />
+          ) : (
+            <form
+              className="standard-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                addActivity(action, item.title, item.price || undefined);
+                setDone(true);
+              }}
+            >
+              <p>Aucun envoi réel. Ce formulaire prépare un brouillon pour « {item.title} ».</p>
+              {action === "Réservation" && (
+                <label>
+                  Date souhaitée
+                  <input type="date" required />
+                </label>
+              )}
+              {action === "Candidature" && (
+                <label>
+                  CV (PDF, maximum 5 Mo)
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    required
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file && file.size > 5 * 1024 * 1024) {
+                        e.target.value = "";
+                        e.target.setCustomValidity("Le fichier doit faire moins de 5 Mo.");
+                        e.target.reportValidity();
+                      } else e.target.setCustomValidity("");
+                    }}
+                  />
+                  <small>Le fichier n’est pas téléversé dans cette démo.</small>
+                </label>
+              )}
+              {action === "Signalement" && (
+                <label>
+                  Motif
+                  <select required>
+                    <option>Annonce suspecte</option>
+                    <option>Contenu inapproprié</option>
+                    <option>Fraude présumée</option>
+                    <option>Autre</option>
+                  </select>
+                </label>
+              )}
+              <label>
+                {action === "Candidature" ? "Lettre de motivation" : "Votre message"}
+                <textarea required minLength={10} rows={4} />
+              </label>
+              <label className="checkbox-label">
+                <input type="checkbox" required /> Je comprends que cette action est une
+                démonstration.
+              </label>
+              <Button type="submit">Enregistrer le brouillon démo</Button>
+            </form>
+          )}
+        </ActionDialog>
+      )}
+    </div>
+  );
+}
