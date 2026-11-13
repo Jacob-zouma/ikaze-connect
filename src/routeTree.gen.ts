@@ -10,33 +10,219 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ModuleRouteImport } from './routes/$module'
+import { Route as AideRouteImport } from './routes/aide'
+import { Route as ConditionsRouteImport } from './routes/conditions'
+import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
+import { Route as ConnexionRouteImport } from './routes/connexion'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as InscriptionRouteImport } from './routes/inscription'
+import { Route as MotDePasseOublieRouteImport } from './routes/mot-de-passe-oublie'
+import { Route as PanierRouteImport } from './routes/panier'
+import { Route as PublierRouteImport } from './routes/publier'
+import { Route as RechercheRouteImport } from './routes/recherche'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AnnonceIdRouteImport } from './routes/annonce.$id'
+import { Route as EspaceRoleRouteImport } from './routes/espace.$role'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ModuleRoute = ModuleRouteImport.update({
+  id: '/$module',
+  path: '/$module',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AideRoute = AideRouteImport.update({
+  id: '/aide',
+  path: '/aide',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConditionsRoute = ConditionsRouteImport.update({
+  id: '/conditions',
+  path: '/conditions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfidentialiteRoute = ConfidentialiteRouteImport.update({
+  id: '/confidentialite',
+  path: '/confidentialite',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConnexionRoute = ConnexionRouteImport.update({
+  id: '/connexion',
+  path: '/connexion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InscriptionRoute = InscriptionRouteImport.update({
+  id: '/inscription',
+  path: '/inscription',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MotDePasseOublieRoute = MotDePasseOublieRouteImport.update({
+  id: '/mot-de-passe-oublie',
+  path: '/mot-de-passe-oublie',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PanierRoute = PanierRouteImport.update({
+  id: '/panier',
+  path: '/panier',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublierRoute = PublierRouteImport.update({
+  id: '/publier',
+  path: '/publier',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RechercheRoute = RechercheRouteImport.update({
+  id: '/recherche',
+  path: '/recherche',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnnonceIdRoute = AnnonceIdRouteImport.update({
+  id: '/annonce/$id',
+  path: '/annonce/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EspaceRoleRoute = EspaceRoleRouteImport.update({
+  id: '/espace/$role',
+  path: '/espace/$role',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$module': typeof ModuleRoute
+  '/aide': typeof AideRoute
+  '/conditions': typeof ConditionsRoute
+  '/confidentialite': typeof ConfidentialiteRoute
+  '/connexion': typeof ConnexionRoute
+  '/contact': typeof ContactRoute
+  '/inscription': typeof InscriptionRoute
+  '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
+  '/panier': typeof PanierRoute
+  '/publier': typeof PublierRoute
+  '/recherche': typeof RechercheRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/annonce/$id': typeof AnnonceIdRoute
+  '/espace/$role': typeof EspaceRoleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$module': typeof ModuleRoute
+  '/aide': typeof AideRoute
+  '/conditions': typeof ConditionsRoute
+  '/confidentialite': typeof ConfidentialiteRoute
+  '/connexion': typeof ConnexionRoute
+  '/contact': typeof ContactRoute
+  '/inscription': typeof InscriptionRoute
+  '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
+  '/panier': typeof PanierRoute
+  '/publier': typeof PublierRoute
+  '/recherche': typeof RechercheRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/annonce/$id': typeof AnnonceIdRoute
+  '/espace/$role': typeof EspaceRoleRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$module': typeof ModuleRoute
+  '/aide': typeof AideRoute
+  '/conditions': typeof ConditionsRoute
+  '/confidentialite': typeof ConfidentialiteRoute
+  '/connexion': typeof ConnexionRoute
+  '/contact': typeof ContactRoute
+  '/inscription': typeof InscriptionRoute
+  '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
+  '/panier': typeof PanierRoute
+  '/publier': typeof PublierRoute
+  '/recherche': typeof RechercheRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/annonce/$id': typeof AnnonceIdRoute
+  '/espace/$role': typeof EspaceRoleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/$module'
+    | '/aide'
+    | '/conditions'
+    | '/confidentialite'
+    | '/connexion'
+    | '/contact'
+    | '/inscription'
+    | '/mot-de-passe-oublie'
+    | '/panier'
+    | '/publier'
+    | '/recherche'
+    | '/reset-password'
+    | '/annonce/$id'
+    | '/espace/$role'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/$module'
+    | '/aide'
+    | '/conditions'
+    | '/confidentialite'
+    | '/connexion'
+    | '/contact'
+    | '/inscription'
+    | '/mot-de-passe-oublie'
+    | '/panier'
+    | '/publier'
+    | '/recherche'
+    | '/reset-password'
+    | '/annonce/$id'
+    | '/espace/$role'
+  id:
+    | '__root__'
+    | '/'
+    | '/$module'
+    | '/aide'
+    | '/conditions'
+    | '/confidentialite'
+    | '/connexion'
+    | '/contact'
+    | '/inscription'
+    | '/mot-de-passe-oublie'
+    | '/panier'
+    | '/publier'
+    | '/recherche'
+    | '/reset-password'
+    | '/annonce/$id'
+    | '/espace/$role'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ModuleRoute: typeof ModuleRoute
+  AideRoute: typeof AideRoute
+  ConditionsRoute: typeof ConditionsRoute
+  ConfidentialiteRoute: typeof ConfidentialiteRoute
+  ConnexionRoute: typeof ConnexionRoute
+  ContactRoute: typeof ContactRoute
+  InscriptionRoute: typeof InscriptionRoute
+  MotDePasseOublieRoute: typeof MotDePasseOublieRoute
+  PanierRoute: typeof PanierRoute
+  PublierRoute: typeof PublierRoute
+  RechercheRoute: typeof RechercheRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  AnnonceIdRoute: typeof AnnonceIdRoute
+  EspaceRoleRoute: typeof EspaceRoleRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +234,123 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$module': {
+      id: '/$module'
+      path: '/$module'
+      fullPath: '/$module'
+      preLoaderRoute: typeof ModuleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aide': {
+      id: '/aide'
+      path: '/aide'
+      fullPath: '/aide'
+      preLoaderRoute: typeof AideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conditions': {
+      id: '/conditions'
+      path: '/conditions'
+      fullPath: '/conditions'
+      preLoaderRoute: typeof ConditionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/confidentialite': {
+      id: '/confidentialite'
+      path: '/confidentialite'
+      fullPath: '/confidentialite'
+      preLoaderRoute: typeof ConfidentialiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connexion': {
+      id: '/connexion'
+      path: '/connexion'
+      fullPath: '/connexion'
+      preLoaderRoute: typeof ConnexionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inscription': {
+      id: '/inscription'
+      path: '/inscription'
+      fullPath: '/inscription'
+      preLoaderRoute: typeof InscriptionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mot-de-passe-oublie': {
+      id: '/mot-de-passe-oublie'
+      path: '/mot-de-passe-oublie'
+      fullPath: '/mot-de-passe-oublie'
+      preLoaderRoute: typeof MotDePasseOublieRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/panier': {
+      id: '/panier'
+      path: '/panier'
+      fullPath: '/panier'
+      preLoaderRoute: typeof PanierRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publier': {
+      id: '/publier'
+      path: '/publier'
+      fullPath: '/publier'
+      preLoaderRoute: typeof PublierRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recherche': {
+      id: '/recherche'
+      path: '/recherche'
+      fullPath: '/recherche'
+      preLoaderRoute: typeof RechercheRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/annonce/$id': {
+      id: '/annonce/$id'
+      path: '/annonce/$id'
+      fullPath: '/annonce/$id'
+      preLoaderRoute: typeof AnnonceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/espace/$role': {
+      id: '/espace/$role'
+      path: '/espace/$role'
+      fullPath: '/espace/$role'
+      preLoaderRoute: typeof EspaceRoleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ModuleRoute: ModuleRoute,
+  AideRoute: AideRoute,
+  ConditionsRoute: ConditionsRoute,
+  ConfidentialiteRoute: ConfidentialiteRoute,
+  ConnexionRoute: ConnexionRoute,
+  ContactRoute: ContactRoute,
+  InscriptionRoute: InscriptionRoute,
+  MotDePasseOublieRoute: MotDePasseOublieRoute,
+  PanierRoute: PanierRoute,
+  PublierRoute: PublierRoute,
+  RechercheRoute: RechercheRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  AnnonceIdRoute: AnnonceIdRoute,
+  EspaceRoleRoute: EspaceRoleRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
