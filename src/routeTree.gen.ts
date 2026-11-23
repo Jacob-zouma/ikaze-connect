@@ -16,6 +16,7 @@ import { Route as ConditionsRouteImport } from './routes/conditions'
 import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as FeedRouteImport } from './routes/feed'
 import { Route as InscriptionRouteImport } from './routes/inscription'
 import { Route as MotDePasseOublieRouteImport } from './routes/mot-de-passe-oublie'
 import { Route as PanierRouteImport } from './routes/panier'
@@ -58,6 +59,11 @@ const ConnexionRoute = ConnexionRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedRoute = FeedRouteImport.update({
+  id: '/feed',
+  path: '/feed',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InscriptionRoute = InscriptionRouteImport.update({
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
+  '/feed': typeof FeedRoute
   '/inscription': typeof InscriptionRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/panier': typeof PanierRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
+  '/feed': typeof FeedRoute
   '/inscription': typeof InscriptionRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/panier': typeof PanierRoute
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
+  '/feed': typeof FeedRoute
   '/inscription': typeof InscriptionRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/panier': typeof PanierRoute
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/confidentialite'
     | '/connexion'
     | '/contact'
+    | '/feed'
     | '/inscription'
     | '/mot-de-passe-oublie'
     | '/panier'
@@ -180,6 +190,7 @@ export interface FileRouteTypes {
     | '/confidentialite'
     | '/connexion'
     | '/contact'
+    | '/feed'
     | '/inscription'
     | '/mot-de-passe-oublie'
     | '/panier'
@@ -197,6 +208,7 @@ export interface FileRouteTypes {
     | '/confidentialite'
     | '/connexion'
     | '/contact'
+    | '/feed'
     | '/inscription'
     | '/mot-de-passe-oublie'
     | '/panier'
@@ -215,6 +227,7 @@ export interface RootRouteChildren {
   ConfidentialiteRoute: typeof ConfidentialiteRoute
   ConnexionRoute: typeof ConnexionRoute
   ContactRoute: typeof ContactRoute
+  FeedRoute: typeof FeedRoute
   InscriptionRoute: typeof InscriptionRoute
   MotDePasseOublieRoute: typeof MotDePasseOublieRoute
   PanierRoute: typeof PanierRoute
@@ -274,6 +287,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feed': {
+      id: '/feed'
+      path: '/feed'
+      fullPath: '/feed'
+      preLoaderRoute: typeof FeedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/inscription': {
@@ -343,6 +363,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConfidentialiteRoute: ConfidentialiteRoute,
   ConnexionRoute: ConnexionRoute,
   ContactRoute: ContactRoute,
+  FeedRoute: FeedRoute,
   InscriptionRoute: InscriptionRoute,
   MotDePasseOublieRoute: MotDePasseOublieRoute,
   PanierRoute: PanierRoute,
